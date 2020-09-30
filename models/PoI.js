@@ -3,7 +3,8 @@ const { model, Schema } = require("mongoose");
 const poiSchema = new Schema(
   {
     name: String,
-    location: String,
+    longitude: Number,
+    latitude: Number,
     checkinTime: Number,
     tolerance: String,
     weekdays: {
