@@ -17,21 +17,25 @@ exports.getLog = async (req, res) => {
 exports.createLog = async (req, res) => {
   const { poiId } = req.params;
   const poi = Poi.findById(poiId);
+  const { longitude, latitude } = req.body;
   const log = await Log.create({
-    location,
-    checkinTime,
-    tolerance,
-    weekdays,
+    longitude,
+    latitude,
     poi: poiId,
-    user: req.user.id,
-    valid: checkinTime < poi.checkinTime + poi.tolerance ? true : false,
+    user: req.user._id,
+    valid: false,
   });
 
-  const user = await User.findByIdAndUpdate(req.user._id, {
-    $push: { collabLogs: log },
-  });
-
-  res.status(200).json({ log, user });
+  const user = await User.findOneAndUpdate(
+    { _id: req.user._id },
+    {
+      $push: { collabLogs: log },
+    }
+  );
+  console.log(log);
+  console.log(poi);
+  console.log(user);
+  res.status(200).json({ log });
 };
 
 exports.deleteLog = async (req, res) => {
