@@ -2,12 +2,8 @@ const { model, Schema, SchemaType } = require("mongoose");
 
 const logSchema = new Schema(
   {
-    location: String,
-    checkinTime: Number,
-    weekdays: {
-      type: [String],
-      enum: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    },
+    longitude: String,
+    latitude: String,
     valid: {
       type: Boolean,
       default: true,
