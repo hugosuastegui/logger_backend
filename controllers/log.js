@@ -26,6 +26,10 @@ exports.createLog = async (req, res) => {
     valid: false,
   });
 
+  if (getMinutesfromTimestamp(log.createdAt) < poi.checkinTime) {
+    log.valid = true;
+    log.save();
+  }
   const user = await User.findOneAndUpdate(
     { _id: req.user._id },
     {
@@ -43,3 +47,9 @@ exports.deleteLog = async (req, res) => {
   await Log.findByIdAndRemove(logId);
   res.status(200).json({ message: "Log Deleted" });
 };
+
+function getMinutesfromTimestamp(timestamp) {
+  const hour = timestamp.slice(11, 16);
+  const array = hour.split(":");
+  return parseInt(array[0]) * 60 + parseInt(array[1]);
+}

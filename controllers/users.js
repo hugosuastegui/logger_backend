@@ -5,9 +5,15 @@ const Log = require("../models/Log");
 exports.getInfo = async (req, res, next) => {
   await User.findById(req.user._id)
     .populate("employerPoIs")
-    .populate("collabLogs")
     .populate("collabs")
     .populate("employer")
+    .populate({
+      path: "collabLogs",
+      populate: {
+        path: "poi",
+        model: "PoI",
+      },
+    })
     .then((user) => res.status(200).json({ user }))
     .catch((err) =>
       res.status(500).json({ message: `Error ocurred in get/profile: ${err}` })
