@@ -16,7 +16,7 @@ exports.getLog = async (req, res) => {
 
 exports.createLog = async (req, res) => {
   const { poiId } = req.params;
-  const poi = Poi.findById(poiId);
+  const poi = await Poi.findById(poiId);
   const { longitude, latitude } = req.body;
   const log = await Log.create({
     longitude,
@@ -26,19 +26,35 @@ exports.createLog = async (req, res) => {
     valid: false,
   });
 
-  if (getMinutesfromTimestamp(log.createdAt) < poi.checkinTime) {
-    log.valid = true;
-    log.save();
-  }
-  const user = await User.findOneAndUpdate(
+  await User.findOneAndUpdate(
     { _id: req.user._id },
     {
       $push: { collabLogs: log },
     }
   );
-  console.log(log);
-  console.log(poi);
-  console.log(user);
+
+  // const logMin = getMinutesfromTimestamp(log.createdAt);
+  // const poiMin = toMin(poi.checkinTime);
+
+  // console.log("========================");
+  // console.log(log.createdAt);
+  // console.log("========================");
+  // console.log(poi.checkinTime);
+  // console.log("========================");
+  // console.log(logMin);
+  // console.log("========================");
+  // console.log(poiMin);
+
+  if (
+    getMinutesfromTimestamp(log.createdAt) <
+    toMin(poi.checkinTime) - poi.tolerance
+  ) {
+    log.valid = true;
+    log.save();
+  }
+
+  console.log(`============== LOG: ${log}`);
+
   res.status(200).json({ log });
 };
 
@@ -49,7 +65,14 @@ exports.deleteLog = async (req, res) => {
 };
 
 function getMinutesfromTimestamp(timestamp) {
-  const hour = timestamp.slice(11, 16);
-  const array = hour.split(":");
-  return parseInt(array[0]) * 60 + parseInt(array[1]);
+  const date = new Date(timestamp);
+  const hour = date.getHours();
+  const min = date.getMinutes();
+  return hour * 60 + min;
+}
+
+function toMin(string) {
+  console.log(string);
+  const array = string.split(":");
+  return parseInt(array[0] * 60) + parseInt(array[1]);
 }

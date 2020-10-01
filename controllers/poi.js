@@ -21,12 +21,11 @@ exports.createPoi = async (req, res) => {
     tolerance,
     weekdays,
   } = req.body;
-  console.log(req.body);
   const poi = await Poi.create({
     name,
     longitude,
     latitude,
-    checkinTime: toMin(checkinTime),
+    checkinTime,
     tolerance,
     weekdays,
     employer: req.user.id,
@@ -51,7 +50,6 @@ exports.updatePoi = async (req, res) => {
     },
     { new: true }
   );
-  console.log(poi);
   res.status(200).json({ poi });
 };
 
@@ -60,8 +58,3 @@ exports.deletePoi = async (req, res) => {
   await Poi.findByIdAndRemove(poiId);
   res.status(200).json({ message: "deleted Poi" });
 };
-
-function toMin(string) {
-  const array = string.split(":");
-  return parseInt(array[0] * 60) + parseInt(array[1]);
-}

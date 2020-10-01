@@ -5,7 +5,7 @@ const poiSchema = new Schema(
     name: String,
     longitude: Number,
     latitude: Number,
-    checkinTime: Number,
+    checkinTime: String,
     tolerance: String,
     weekdays: {
       type: [String],

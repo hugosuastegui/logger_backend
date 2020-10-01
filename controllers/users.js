@@ -51,8 +51,6 @@ exports.updateUser = async (req, res) => {
     .populate("collabs")
     .populate("employer");
 
-  console.log(req.body);
-
   if (typeof req.body.email !== "undefined") {
     user.email = req.body.email;
   }
