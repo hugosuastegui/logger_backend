@@ -32,19 +32,6 @@ exports.createLog = async (req, res) => {
       $push: { collabLogs: log },
     }
   );
-
-  // const logMin = getMinutesfromTimestamp(log.createdAt);
-  // const poiMin = toMin(poi.checkinTime);
-
-  // console.log("========================");
-  // console.log(log.createdAt);
-  // console.log("========================");
-  // console.log(poi.checkinTime);
-  // console.log("========================");
-  // console.log(logMin);
-  // console.log("========================");
-  // console.log(poiMin);
-
   if (
     getMinutesfromTimestamp(log.createdAt) <
     toMin(poi.checkinTime) - poi.tolerance
@@ -52,8 +39,6 @@ exports.createLog = async (req, res) => {
     log.valid = true;
     log.save();
   }
-
-  console.log(`============== LOG: ${log}`);
 
   res.status(200).json({ log });
 };
