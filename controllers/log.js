@@ -32,6 +32,8 @@ exports.createLog = async (req, res) => {
       $push: { collabLogs: log },
     }
   );
+  console.log(getMinutesfromTimestamp(log.createdAt));
+  console.log(toMin(poi.checkinTime));
   if (
     getMinutesfromTimestamp(log.createdAt) <
     toMin(poi.checkinTime) - poi.tolerance
