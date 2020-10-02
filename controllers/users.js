@@ -5,7 +5,13 @@ const Log = require("../models/Log");
 exports.getInfo = async (req, res, next) => {
   await User.findById(req.user._id)
     .populate("employerPoIs")
-    .populate("collabs")
+    .populate({
+      path: "collabs",
+      populate: {
+        path: "collabLogs",
+        model: "Log",
+      },
+    })
     .populate("employer")
     .populate({
       path: "collabLogs",
