@@ -54,7 +54,9 @@ exports.updatePoi = async (req, res) => {
 };
 
 exports.deletePoi = async (req, res) => {
+  console.log("dentro del controller de detele poi");
   const { poiId } = req.params;
+  console.log(poiId);
   await Poi.findByIdAndRemove(poiId);
   res.status(200).json({ message: "deleted Poi" });
 };

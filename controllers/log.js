@@ -32,11 +32,11 @@ exports.createLog = async (req, res) => {
       $push: { collabLogs: log },
     }
   );
-  console.log(getMinutesfromTimestamp(log.createdAt));
-  console.log(toMin(poi.checkinTime));
+
   if (
     getMinutesfromTimestamp(log.createdAt) <
-    toMin(poi.checkinTime) - poi.tolerance
+      toMin(poi.checkinTime) - poi.tolerance &&
+    checkLocation(poi.longitude, poi.latitude, log.longitude, log.latitude, 4)
   ) {
     log.valid = true;
     log.save();
@@ -62,4 +62,31 @@ function toMin(string) {
   console.log(string);
   const array = string.split(":");
   return parseInt(array[0] * 60) + parseInt(array[1]);
+}
+
+function checkLocation(lngPoi, latPoi, lngLog, latPoi, precision) {
+  if (precision > 7) precision = 7;
+
+  const a = [
+    ("" + lngPoi).split(".")[0],
+    ("" + lngPoi).split(".")[1].slice(0, precision),
+  ].join(".");
+  const b = [
+    ("" + latPoi).split(".")[0],
+    ("" + latPoi).split(".")[1].slice(0, precision),
+  ].join(".");
+  const a1 = [
+    ("" + lngLog).split(".")[0],
+    ("" + lngLog).split(".")[1].slice(0, precision),
+  ].join(".");
+  const b1 = [
+    ("" + latPoi).split(".")[0],
+    ("" + latPoi).split(".")[1].slice(0, precision),
+  ].join(".");
+  console.log(a, a1, b, b1);
+  if (a === a1 && b === b1) {
+    return true;
+  } else {
+    return false;
+  }
 }
